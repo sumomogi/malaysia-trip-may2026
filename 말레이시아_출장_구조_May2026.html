@@ -282,8 +282,11 @@
       /* Map link */
       .map-link { font-size: 0.58rem; padding: 2px 5px; }
 
-      /* ev-sub wrapping */
-      .ev-sub { word-break: keep-all; }
+      /* ev-sub & ev-content wrapping */
+      .ev-content { min-width: 0; overflow: hidden; }
+      .ev-sub { overflow-wrap: break-word; word-break: break-word; }
+      .ev-header { flex-wrap: wrap; }
+      span[style*="color:#888"] { font-size: 0.65rem; line-height: 1.45; }
     }
   </style>
 </head>
