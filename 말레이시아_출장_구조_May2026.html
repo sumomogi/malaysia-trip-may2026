@@ -248,6 +248,83 @@
     }
     .map-link:hover { background: #dbeafe; }
 
+
+    /* ══ E-BOOK HIERARCHY ══════════════════════════════════════ */
+
+    /* Page header — book title */
+    .page-header { margin-bottom: 48px; padding-bottom: 32px; border-bottom: 2px solid #1e3a5f; }
+    .page-header h1 { font-size: 1.9rem; font-weight: 900; letter-spacing: -0.8px; line-height: 1.15; }
+    .page-header h1 .sub-title {
+      display: block; font-size: 0.72rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 2.5px;
+      color: #3b82f6; margin-bottom: 6px;
+    }
+    .meta-item { font-size: 0.75rem; }
+
+    /* Chapter heading — section titles */
+    .section { margin-bottom: 48px; }
+    .chapter-wrap {
+      display: flex; align-items: flex-end; gap: 14px;
+      margin-bottom: 16px; padding-bottom: 10px;
+      border-bottom: 2px solid #1e3a5f;
+    }
+    .chapter-num {
+      font-size: 3rem; font-weight: 900; line-height: 1;
+      color: #dbeafe; letter-spacing: -3px; flex-shrink: 0;
+      margin-bottom: -4px;
+    }
+    .chapter-label {
+      font-size: 0.6rem; font-weight: 800;
+      text-transform: uppercase; letter-spacing: 2px; color: #1e3a5f;
+      padding-bottom: 6px;
+    }
+
+    /* Sub-chapter — phase location strip */
+    .phase-label {
+      padding: 12px 24px;
+      background: #1e3a5f;
+      border-bottom: none;
+    }
+    .phase-label svg { stroke: #93c5fd; }
+    .phase-label span {
+      font-size: 0.62rem; font-weight: 800;
+      letter-spacing: 2px; color: #bfdbfe;
+      text-transform: uppercase;
+    }
+    .phase-label .pl-line { background: rgba(255,255,255,0.12); }
+
+    /* Entry — day card title hierarchy */
+    .day-header { padding: 18px 24px; gap: 16px; }
+    .d-num { font-size: 1.15rem; font-weight: 900; }
+    .d-dow { font-size: 0.52rem; letter-spacing: 0.8px; }
+    .day-summary .d-loc { font-size: 0.6rem; letter-spacing: 0.5px; margin-bottom: 5px; }
+    .day-summary .d-title { font-size: 1.1rem; font-weight: 800; letter-spacing: -0.3px; line-height: 1.2; }
+    .day-summary .d-sub { font-size: 0.7rem; color: #94a3b8; margin-top: 4px; }
+
+    /* Body — event name */
+    .ev-name { font-size: 0.82rem; font-weight: 600; color: #1e293b; }
+
+    /* Caption — sub details */
+    .ev-sub { font-size: 0.68rem; color: #94a3b8; margin-top: 3px; line-height: 1.5; }
+
+    /* Event description (golf) */
+    span[style*="color:#888"] {
+      font-size: 0.68rem !important; color: #64748b !important;
+      font-style: italic; line-height: 1.5;
+    }
+
+    /* Day tag — refined */
+    .day-tag { font-size: 0.55rem; letter-spacing: 1px; padding: 4px 10px; }
+
+    /* Meetings card hierarchy */
+    .mi-date { font-size: 0.6rem; letter-spacing: 1.5px; margin-bottom: 10px; }
+    .mi-title { font-size: 1rem; font-weight: 800; color: #0f172a; margin-bottom: 8px; letter-spacing: -0.2px; }
+    .mi-row { font-size: 0.74rem; }
+    .mi-time { font-size: 0.82rem; font-weight: 800; margin-top: 12px; }
+
+    /* Footer */
+    .page-footer { font-size: 0.65rem; color: #cbd5e1; margin-top: 64px; letter-spacing: 0.5px; text-transform: uppercase; }
+
     /* ── Mobile responsive ── */
     @media (max-width: 600px) {
       .page { padding: 28px 14px 60px; }
@@ -296,8 +373,9 @@
   <!-- ── Header ── -->
   <div class="page-header">
     <h1>
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
-      말레이시아 출장 <span style="font-weight:400;color:#aaa;font-size:1.1rem">May 2026</span>
+      <span class="sub-title">Business Trip · May 2026</span>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1e3a5f" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+      말레이시아 출장
     </h1>
     <div class="meta">
       <div class="meta-item">
@@ -321,7 +399,10 @@
 
   <!-- ── Flights ── -->
   <div class="section">
-    <div class="section-title">항공편</div>
+    <div class="chapter-wrap">
+      <div class="chapter-num">01</div>
+      <div class="chapter-label">항공편</div>
+    </div>
     <div class="card">
       <div class="flights">
         <div class="flight">
@@ -372,7 +453,10 @@
 
   <!-- ── Schedule ── -->
   <div class="section">
-    <div class="section-title">현지 일정</div>
+    <div class="chapter-wrap">
+      <div class="chapter-num">02</div>
+      <div class="chapter-label">현지 일정</div>
+    </div>
     <div class="card">
       <div class="schedule">
 
@@ -683,7 +767,10 @@
 
   <!-- ── Meetings ── -->
   <div class="section">
-    <div class="section-title">확정 미팅</div>
+    <div class="chapter-wrap">
+      <div class="chapter-num">03</div>
+      <div class="chapter-label">확정 미팅</div>
+    </div>
     <div class="card">
       <div class="meetings-row">
         <div class="meeting-item">
