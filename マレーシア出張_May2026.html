@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Malaysia Business Trip — May 2026</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/packages/pretendard-jp/dist/web/static/pretendard-jp.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Pretendard JP', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f6f6f6;
+      color: #222;
+      -webkit-font-smoothing: antialiased;
+    }
+    .page { max-width: 720px; margin: 0 auto; padding: 48px 20px 80px; }
+
+    /* Header */
+    .page-header { margin-bottom: 40px; }
+    .page-header h1 { font-size: 1.75rem; font-weight: 700; letter-spacing: -0.5px; color: #111; display: flex; align-items: center; gap: 10px; }
+    .page-header .meta { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 16px; }
+    .meta-item { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: #717171; }
+    .meta-item svg { flex-shrink: 0; }
+
+    /* Section */
+    .section { margin-bottom: 36px; }
+    .section-title { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: #aaa; margin-bottom: 12px; }
+
+    /* Card */
+    .card { background: #fff; border: 1px solid #e5e5e5; border-radius: 16px; overflow: hidden; }
+
+    /* Flights */
+    .flights { display: grid; grid-template-columns: 1fr 1fr; }
+    .flight { padding: 22px 24px; }
+    .flight + .flight { border-left: 1px solid #f0f0f0; }
+    .flight-label { display: flex; align-items: center; gap: 6px; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #aaa; margin-bottom: 14px; }
+    .flight-num { font-size: 0.82rem; font-weight: 700; color: #333; margin-bottom: 12px; }
+    .flight-route { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+    .iata { font-size: 1.5rem; font-weight: 700; letter-spacing: -1px; color: #111; line-height: 1; }
+    .iata-time { font-size: 0.7rem; color: #aaa; margin-top: 3px; }
+    .flight-line { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+    .flight-line .fl-dur { font-size: 0.62rem; color: #bbb; }
+    .flight-line .fl-bar { width: 100%; height: 1px; background: #ddd; position: relative; }
+    .flight-line .fl-bar::after { content: ''; position: absolute; right: -4px; top: -3px; width: 7px; height: 7px; border-top: 1px solid #bbb; border-right: 1px solid #bbb; transform: rotate(45deg); }
+    .flight-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+    .ftag { font-size: 0.67rem; font-weight: 600; padding: 3px 8px; border-radius: 6px; background: #f6f6f6; color: #555; }
+    .ftag.res { background: #eef4ff; color: #1e40af; }
+
+    /* Schedule */
+    .schedule { display: flex; flex-direction: column; }
+
+    /* Phase label */
+    .phase-label {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 24px;
+      background: #fafafa;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .phase-label span {
+      font-size: 0.6rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1px; color: #bbb;
+    }
+    .phase-label .pl-line { flex: 1; height: 1px; background: #efefef; }
+
+    /* Day row */
+    .day-card { border-bottom: 1px solid #f3f3f3; }
+    .day-card:last-child { border-bottom: none; }
+    .day-card.dc-meeting { background: #f8fbff; border-left: 3px solid #3b82f6; }
+    .day-card.dc-meeting .day-header { padding-left: 21px; }
+
+    .day-header {
+      display: grid;
+      grid-template-columns: 52px 1fr auto;
+      align-items: center; gap: 14px;
+      padding: 16px 24px; cursor: default;
+    }
+
+    /* Date badge */
+    .day-num-block { display: flex; flex-direction: column; align-items: center; }
+    .d-badge {
+      width: 38px; height: 38px; border-radius: 50%;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      background: #f4f4f4;
+    }
+    .d-badge.badge-meeting { background: #dbeafe; }
+    .d-badge.badge-depart  { background: #eef3fb; }
+    .d-badge.badge-travel  { background: #e0f2fe; }
+    .d-badge.badge-leisure { background: #e0f2fe; }
+    .d-badge.badge-golf    { background: #eff6ff; }
+    .d-num { font-size: 1.1rem; font-weight: 800; color: #111; line-height: 1; }
+    .d-dow { font-size: 0.5rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; color: #bbb; margin-top: 1px; }
+    .d-badge.badge-meeting .d-num { color: #1e40af; }
+    .d-badge.badge-depart  .d-num { color: #1e3a5f; }
+    .d-badge.badge-travel  .d-num { color: #1d4ed8; }
+    .d-badge.badge-leisure .d-num { color: #1d4ed8; }
+    .d-badge.badge-golf    .d-num { color: #1d4ed8; }
+
+    /* Summary */
+    .day-summary .d-loc {
+      display: flex; align-items: center; gap: 4px;
+      font-size: 0.65rem; color: #bbb; margin-bottom: 4px; letter-spacing: 0.1px;
+    }
+    .day-summary .d-title { font-size: 1.05rem; font-weight: 700; color: #111; letter-spacing: -0.2px; line-height: 1.25; }
+    .day-summary .d-sub { font-size: 0.72rem; color: #aaa; margin-top: 3px; font-weight: 400; }
+
+    /* Tag */
+    .day-tag {
+      font-size: 0.58rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.5px; padding: 4px 9px; border-radius: 20px;
+      display: flex; align-items: center; gap: 4px; white-space: nowrap;
+    }
+    .tag-meeting { background: #eff6ff; color: #1e40af; }
+    .tag-travel  { background: #e0f2fe; color: #1d4ed8; }
+    .tag-leisure { background: #e0f2fe; color: #1d4ed8; }
+    .tag-prep    { background: #f6f6f6; color: #999; }
+    .tag-depart  { background: #eef3fb; color: #1e3a5f; }
+    .tag-golf    { background: #eff6ff; color: #1e40af; }
+
+    /* Events */
+    .day-events { padding: 2px 24px 16px 90px; display: flex; flex-direction: column; gap: 7px; }
+
+    .ev {
+      display: flex; align-items: flex-start; gap: 8px;
+      padding: 8px 10px; border-radius: 9px;
+      background: #f9f9f9;
+    }
+    .ev.ev-meeting { background: #eff6ff; }
+    .ev.ev-drive   { background: #eff6ff; }
+    .ev.ev-ferry   { background: #f0f9ff; }
+    .ev.ev-flight  { background: #eef4ff; }
+    .ev.ev-depart  { background: #eef3fb; }
+    .ev.ev-note    { background: #fafafa; }
+
+    .ev-icon-wrap {
+      width: 28px; height: 28px; border-radius: 7px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; background: white;
+    }
+    .ev.ev-meeting .ev-icon-wrap { background: #dbeafe; }
+    .ev.ev-drive   .ev-icon-wrap { background: #dbeafe; }
+    .ev.ev-ferry   .ev-icon-wrap { background: #e0f2fe; }
+    .ev.ev-flight  .ev-icon-wrap { background: #e0f2fe; }
+    .ev.ev-depart  .ev-icon-wrap { background: #dbeafe; }
+    .ev.ev-note    .ev-icon-wrap { background: #f3f3f3; }
+
+    .ev-content { flex: 1; min-width: 0; }
+    .ev-header { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+    .ev-name { font-size: 0.8rem; font-weight: 500; color: #333; }
+    .ev-time-pill {
+      font-size: 0.62rem; font-weight: 700; letter-spacing: 0.2px;
+      padding: 2px 7px; border-radius: 10px;
+      background: rgba(0,0,0,0.06); color: #555;
+      flex-shrink: 0;
+    }
+    .ev.ev-meeting .ev-time-pill { background: #bfdbfe; color: #1d4ed8; }
+    .ev.ev-depart  .ev-time-pill { background: #bfdbfe; color: #1e3a8a; }
+    .ev-sub  { font-size: 0.7rem; color: #bbb; margin-top: 2px; display: block; }
+    .ev-warn {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 0.68rem; color: #2563eb; margin-top: 4px;
+      background: #eef4ff; padding: 3px 8px; border-radius: 6px;
+    }
+
+    /* Event group separator */
+    .ev-group-label {
+      display: flex; align-items: center; gap: 8px;
+      padding: 4px 0 2px;
+    }
+    .ev-group-label span {
+      font-size: 0.58rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.8px;
+      color: #ccc; white-space: nowrap;
+    }
+    .ev-group-label::after {
+      content: ''; flex: 1; height: 1px; background: #f0f0f0;
+    }
+
+    /* Alert */
+    .alert-box { margin: 4px 24px 20px; padding: 12px 14px; background: #eef4ff; border: 1px solid #bfdbfe; border-radius: 10px; font-size: 0.76rem; color: #1e40af; line-height: 1.55; display: flex; gap: 8px; }
+
+    /* Meetings */
+    .meetings-row { display: grid; grid-template-columns: 1fr 1fr; }
+    .meeting-item { padding: 22px 24px; }
+    .meeting-item + .meeting-item { border-left: 1px solid #f0f0f0; }
+    .mi-date { display: flex; align-items: center; gap: 5px; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #1e40af; margin-bottom: 8px; }
+    .mi-title { font-size: 0.9rem; font-weight: 700; color: #111; margin-bottom: 6px; }
+    .mi-row { display: flex; align-items: flex-start; gap: 6px; font-size: 0.76rem; color: #717171; margin-bottom: 4px; line-height: 1.4; }
+    .mi-row svg { flex-shrink: 0; margin-top: 1px; }
+    .mi-time { display: flex; align-items: center; gap: 5px; font-size: 0.76rem; font-weight: 700; color: #333; margin-top: 10px; }
+
+    .page-footer { text-align: center; font-size: 0.7rem; color: #ccc; margin-top: 48px; }
+
+    /* Map link */
+    .map-link {
+      display: inline-flex; align-items: center; gap: 3px;
+      font-size: 0.62rem; font-weight: 600; color: #3b82f6;
+      text-decoration: none; padding: 2px 6px; border-radius: 6px;
+      background: #eff6ff; transition: background 0.15s;
+      white-space: nowrap;
+    }
+    .map-link:hover { background: #dbeafe; }
+
+    /* ── Mobile responsive ── */
+    @media (max-width: 600px) {
+      .page { padding: 28px 14px 60px; }
+      .page-header h1 { font-size: 1.35rem; }
+
+      /* Flights: stack vertically */
+      .flights { grid-template-columns: 1fr; }
+      .flight + .flight { border-left: none; border-top: 1px solid #f0f0f0; }
+      .iata { font-size: 1.2rem; }
+
+      /* Day header */
+      .day-header { grid-template-columns: 44px 1fr auto; gap: 10px; padding: 14px 16px; }
+      .day-card.dc-meeting .day-header { padding-left: 13px; }
+      .d-badge { width: 34px; height: 34px; }
+      .d-num { font-size: 0.95rem; }
+      .day-summary .d-title { font-size: 0.92rem; }
+
+      /* Events: reduce left indent */
+      .day-events { padding: 2px 16px 14px 70px; gap: 6px; }
+
+      /* Phase label */
+      .phase-label { padding: 9px 16px; }
+
+      /* Alert */
+      .alert-box { margin: 4px 16px 16px; font-size: 0.72rem; }
+
+      /* Meetings: stack vertically */
+      .meetings-row { grid-template-columns: 1fr; }
+      .meeting-item + .meeting-item { border-left: none; border-top: 1px solid #f0f0f0; }
+      .meeting-item { padding: 18px 20px; }
+
+      /* Map link */
+      .map-link { font-size: 0.58rem; padding: 2px 5px; }
+
+      /* ev-sub wrapping */
+      .ev-sub { word-break: keep-all; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ── Header ── -->
+  <div class="page-header">
+    <h1>
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+      マレーシア出張 <span style="font-weight:400;color:#aaa;font-size:1.1rem">May 2026</span>
+    </h1>
+    <div class="meta">
+      <div class="meta-item">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        May 22 – 30, 2026
+      </div>
+      <div class="meta-item">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.02 1.18 2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.91a16 16 0 006.18 6.18l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+        JL 0723 / JL 0724
+      </div>
+      <div class="meta-item">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+        EMJUU8
+      </div>
+      <div class="meta-item">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        9泊8日
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Flights ── -->
+  <div class="section">
+    <div class="section-title">フライト</div>
+    <div class="card">
+      <div class="flights">
+        <div class="flight">
+          <div class="flight-label">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+            出発 · Departure
+          </div>
+          <div class="flight-num">JL 0723</div>
+          <div class="flight-route">
+            <div><div class="iata">NRT</div><div class="iata-time">11:25 · T2</div></div>
+            <div class="flight-line">
+              <div class="fl-dur">7h 30m</div>
+              <div class="fl-bar"></div>
+            </div>
+            <div><div class="iata">KUL</div><div class="iata-time">17:55 · T1</div></div>
+          </div>
+          <div class="flight-tags">
+            <span class="ftag">22 MAY (FRI)</span>
+            <span class="ftag">Class Q / OK</span>
+            <span class="ftag">手荷物 2PC</span>
+            <span class="ftag res">EMJUU8</span>
+          </div>
+        </div>
+        <div class="flight">
+          <div class="flight-label">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" transform="rotate(90 12 12)"/></svg>
+            帰国 · Return
+          </div>
+          <div class="flight-num">JL 0724</div>
+          <div class="flight-route">
+            <div><div class="iata">KUL</div><div class="iata-time">22:50 · T1</div></div>
+            <div class="flight-line">
+              <div class="fl-dur">7h 05m</div>
+              <div class="fl-bar"></div>
+            </div>
+            <div><div class="iata">NRT</div><div class="iata-time">06:55+1 · T2</div></div>
+          </div>
+          <div class="flight-tags">
+            <span class="ftag">30 MAY (SAT)</span>
+            <span class="ftag">Class Q / OK</span>
+            <span class="ftag">手荷物 2PC</span>
+            <span class="ftag res">EMJUU8</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Schedule ── -->
+  <div class="section">
+    <div class="section-title">現地スケジュール</div>
+    <div class="card">
+      <div class="schedule">
+
+        <!-- ─ PHASE: Kuala Lumpur ─ -->
+        <div class="phase-label">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span>Kuala Lumpur &nbsp;·&nbsp; May 22–25</span>
+          <div class="pl-line"></div>
+        </div>
+
+        <!-- MAY 22 -->
+        <div class="day-card">
+          <div class="day-header">
+            <div class="day-num-block">
+              <div class="d-badge badge-travel"><span class="d-num">22</span><span class="d-dow">Fri</span></div>
+            </div>
+            <div class="day-summary">
+              <div class="d-loc"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>Kuala Lumpur</div>
+              <div class="d-title">到着・レンタカー受取</div>
+            </div>
+            <span class="day-tag tag-travel"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>移動</span>
+          </div>
+          <div class="day-events">
+            <div class="ev ev-flight">
+              <div class="ev-icon-wrap"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg></div>
+              <div class="ev-content">
+                <div class="ev-header"><span class="ev-name">KUL 到着・チェックイン</span><span class="ev-time-pill">17:55</span></div>
+                <span class="ev-sub">KLIA ターミナル1</span>
+              </div>
+            </div>
+            <div class="ev ev-drive">
+              <div class="ev-icon-wrap"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 17H3V11l3-5h12l3 5v6h-3"/><circle cx="7.5" cy="17" r="2"/><circle cx="16.5" cy="17" r="2"/><path d="M3 11h18M9 6l-1 5M15 6l1 5"/></svg></div>
+              <div class="ev-content">
+                <div class="ev-header"><span class="ev-name">レンタカー受取</span></div>
+                <span class="ev-sub">KLIA T1 — レンタカーセンター 到着ロビー1F</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MAY 23 -->
+        <div class="day-card">
+          <div class="day-header">
+            <div class="day-num-block">
+              <div class="d-badge badge-golf"><span class="d-num">23</span><span class="d-dow">Sat</span></div>
+            </div>
+            <div class="day-summary">
+              <div class="d-loc"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>Kuala Lumpur</div>
+              <div class="d-title">ゴルフラウンド</div>
+              <div class="d-sub">TPC Kuala Lumpur (旧 KLGCC)</div>
+            </div>
+            <span class="day-tag tag-golf"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="18" r="3"/><path d="M12 15V3l8 4-8 4"/></svg>ゴルフ</span>
+          </div>
+          <div class="day-events">
+            <div class="ev ev-meeting">
+              <div class="ev-icon-wrap"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1e40af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="18" r="3"/><path d="M12 15V3l8 4-8 4"/></svg></div>
+              <div class="ev-content">
+                <div class="ev-header"><span class="ev-name">TPC Kuala Lumpur</span><a href="https://maps.google.com/?q=TPC+Kuala+Lumpur+KLGCC" target="_blank" class="map-link"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>Map</a></div>
+                <span class="ev-sub" style="color:#888;margin-top:1px">マレーシアを代表する名門クラブ・PGAツアーCIMB Classic歴代開催地</span>
+                <span class="ev-sub">旧 KLGCC / TPCKL</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MAY 24 -->
+        <div class="day-card">
+          <div class="day-header">
+            <div class="day-num-block">
+              <div class="d-badge"><span class="d-num">24</span><span class="d-dow">Sun</span></div>
+            </div>
+            <div class="day-summary">
+              <div class="d-loc"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>Kuala Lumpur</div>
+              <div class="d-title">ミーティング最終確認</div>
+            </div>
+            <span class="day-tag tag-prep"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>準備</span>
+          </div>
+          <div class="day-events">
+            <div class="ev ev-note">
+              <div class="ev-icon-wrap"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+              <div class="ev-content">
+                <div class="ev-header"><span class="ev-name">資料確認・スケジュール最終確認</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MAY 25 — meeting day -->
+        <div class="day-card dc-meeting">
+          <div class="day-header">
+            <div class="day-num-block">
+              <div class="d-badge badge-meeting"><span class="d-num">25</span><span class="d-dow">Mon</span></div>
+            </div>
+            <div class="day-summary">
+              <div class="d-loc"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>Kuala Lumpur → Arau</div>
+              <div class="d-title">MOHミーティング・KL→Arau移動</div>
+            </div>
+            <span class="day-tag tag-meeting"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="12"/></svg>ミーティング</span>
+          </div>
+          <div class="day-events">
+            <div class="ev-group-label"><span>ミーティング</span></div>
+            <div class="ev ev-meeting">
+              <div class="ev-icon-wrap"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1e40af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M3 10h18M5 21V10l7-7 7 7v11"/><path d="M10 14h4M12 12v4"/></svg></div>
+              <div class="ev-content">
+                <div class="ev-header"><span class="ev-name">MOHとのミーティング</span><span class="ev-time-pill">10:00</span></div>
+                <span class="ev-sub">MOH会議室、クアラルンプール</span>
+              </div>
+            </div>
+            <div class="ev-group-label"><span>移動</span></div>
+            <div class="ev ev-drive">
+              <div class="ev-icon-wrap"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 17H3V11l3-5h12l3 5v6h-3"/><circle cx="7.5" cy="17" r="2"/><circle cx="16.5" cy="17" r="2"/><path d="M3 11h18M9 6l-1 5M15 6l1 5"/></svg></div>
+              <div class="ev-content">
+                <div class="ev-header"><span class="ev-name">KL → Perlis 移動</span><span class="ev-time-pill">午後出発</span></div>
+                <span class="ev-sub">約450km・4.5h・当日出発推奨</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ─ PHASE: Arau → Langkawi ─ -->
+        <div class="phase-label">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span>Arau, Perlis → Langkawi &nbsp;·&nbsp; May 26</span>
+          <div class="pl-line"></div>
+        </div>
+
+        <!-- MAY 26 — meeting day -->
+        <div class="day-card dc-meeting">
+          <div class="day-header">
+            <div class="day-num-block">
+              <div class="d-badge badge-meeting"><span class="d-num">26</span><span class="d-dow">Tue</span></div>
+            </div>
+            <div class="day-summary">
+              <div class="d-loc"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>Arau, Perlis → Langkawi</div>
+              <div class="d-title">PTSSミーティング・ランカウイへ移動</div>
+            </div>
+            <span class="day-tag tag-meeting"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="12"/></svg>ミーティング</span>
+          </div>
+          <div class="day-events">
+            <div class="ev-group-label"><span>ミーティング</span></div>
+            <div class="ev ev-meeting">
+              <div class="ev-icon-wrap"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1e40af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M9 21V9H6l6-6 6 6h-3v12"/><path d="M9 12h6M9 16h6"/></svg></div>
+              <div class="ev-content">
+                <div class="ev-header"><span class="ev-name">PTSS Arauディレクターとのミーティング</span><span class="ev-time-pill">09:00</span></div>
+                <span class="ev-sub">ディレクター会議室、PTSS Arau, Perlis</span>
+                <div class="ev-warn"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Day of Arafat（祝日 tentative）— 事前確認必要</div>
+              </div>
+            </div>
+            <div class="ev-group-label"><span>移動</span></div>
+            <div class="ev ev-drive">
+              <div class="ev-icon-wrap"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="3.5"/><path d="M10.5 12L19 3"/><path d="M15 7l2 2"/><path d="M19 3l2 2-1.5 1.5"/></svg></div>
+              <div class="ev-content">
+                <div class="ev-header"><span class="ev-name">レンタカー返却 → Kuala Perlis</span></div>
+                <span class="ev-sub">約30分・フェリー乗船前に返却</span>
+              </div>
+            </div>
+            <div class="ev ev-ferry">
+              <div class="ev-icon-wrap"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17h18M3 17l2-8h14l2 8M3 17l-1 3h20l-1-3"/><path d="M9 9V7m3 2V5m3 2V7"/></svg></div>
+              <div class="ev-content">
+                <div class="ev-header"><span class="ev-name">フェリー → ランカウイ</span></div>
+                <span class="ev-sub">Kuala Perlis フェリーターミナル・約1h 15分</span>
+              </div>
+            </div>
+            <div class="ev ev-drive">
+              <div class="ev-icon-wrap"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 17H3V11l3-5h12l3 5v6h-3"/><circle cx="7.5" cy="17" r="2"/><circle cx="16.5" cy="17" r="2"/><path d="M3 11h18M9 6l-1 5M15 6l1 5"/></svg></div>
+              <div class="ev-content">
+                <div class="ev-header"><span class="ev-name">レンタカー受取</span></div>
+                <span class="ev-sub">ランカウイ国際空港・フェリー到着後</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ─ PHASE: Langkawi ─ -->
+        <div class="phase-label">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span>Langkawi &nbsp;·&nbsp; May 27–29</span>
+          <div class="pl-line"></div>
+        </div>
+
+        <!-- MAY 27 -->
+        <div class="day-card">
+          <div class="day-header">
+            <div class="day-num-block">
+              <div class="d-badge badge-golf"><span class="d-num">27</span><span class="d-dow">Wed</span></div>
+            </div>
+            <div class="day-summary">
+              <div class="d-loc"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>Langkawi</div>
+              <div class="d-title">ゴルフラウンド</div>
+              <div class="d-sub">The Els Club Teluk Datai</div>
+            </div>
+            <span class="day-tag tag-golf"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="18" r="3"/><path d="M12 15V3l8 4-8 4"/></svg>ゴルフ</span>
+          </div>
+          <div class="day-events">
+            <div class="ev ev-meeting">
+              <div class="ev-icon-wrap"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1e40af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="18" r="3"/><path d="M12 15V3l8 4-8 4"/></svg></div>
+              <div class="ev-content">
+                <div class="ev-header"><span class="ev-name">The Els Club Teluk Datai</span><a href="https://maps.google.com/?q=The+Els+Club+Teluk+Datai+Langkawi" target="_blank" class="map-link"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>Map</a></div>
+                <span class="ev-sub" style="color:#888;margin-top:1px">アーニー・エルス設計・原始熱帯雨林とアンダマン海を望むアジア屈指のコース</span>
+                <span class="ev-sub">Langkawi &nbsp;·&nbsp; ⚠️ ハリラヤ・ハジ（tentative）</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MAY 28 -->
+        <div class="day-card">
+          <div class="day-header">
+            <div class="day-num-block">
+              <div class="d-badge badge-golf"><span class="d-num">28</span><span class="d-dow">Thu</span></div>
+            </div>
+            <div class="day-summary">
+              <div class="d-loc"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>Langkawi</div>
+              <div class="d-title">ゴルフラウンド</div>
+              <div class="d-sub">99 East Golf Club</div>
+            </div>
+            <span class="day-tag tag-golf"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="18" r="3"/><path d="M12 15V3l8 4-8 4"/></svg>ゴルフ</span>
+          </div>
+          <div class="day-events">
+            <div class="ev ev-meeting">
+              <div class="ev-icon-wrap"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1e40af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="18" r="3"/><path d="M12 15V3l8 4-8 4"/></svg></div>
+              <div class="ev-content">
+                <div class="ev-header"><span class="ev-name">99 East Golf Club</span><a href="https://maps.google.com/?q=99+East+Golf+Club+Langkawi" target="_blank" class="map-link"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>Map</a></div>
+                <span class="ev-sub" style="color:#888;margin-top:1px">ランカウイ南部のモダンなチャンピオンシップコース・広いフェアウェイと開放的な眺望</span>
+                <span class="ev-sub">Langkawi &nbsp;·&nbsp; ⚠️ ハリラヤ・ハジ Day 2（tentative）</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MAY 29 -->
+        <div class="day-card">
+          <div class="day-header">
+            <div class="day-num-block">
+              <div class="d-badge badge-golf"><span class="d-num">29</span><span class="d-dow">Fri</span></div>
+            </div>
+            <div class="day-summary">
+              <div class="d-loc"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>Langkawi</div>
+              <div class="d-title">ゴルフラウンド</div>
+              <div class="d-sub">Gunung Raya Golf Resort</div>
+            </div>
+            <span class="day-tag tag-golf"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="18" r="3"/><path d="M12 15V3l8 4-8 4"/></svg>ゴルフ</span>
+          </div>
+          <div class="day-events">
+            <div class="ev ev-meeting">
+              <div class="ev-icon-wrap"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1e40af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="18" r="3"/><path d="M12 15V3l8 4-8 4"/></svg></div>
+              <div class="ev-content">
+                <div class="ev-header"><span class="ev-name">Gunung Raya Golf Resort</span><a href="https://maps.google.com/?q=Gunung+Raya+Golf+Resort+Langkawi" target="_blank" class="map-link"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>Map</a></div>
+                <span class="ev-sub" style="color:#888;margin-top:1px">ランカウイ最高峰グヌン・ラヤ山麓・雄大な山岳ビューのリゾートコース</span>
+                <span class="ev-sub">Langkawi</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ─ PHASE: 帰国 ─ -->
+        <div class="phase-label">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+          <span>帰国 &nbsp;·&nbsp; May 30</span>
+          <div class="pl-line"></div>
+        </div>
+
+        <!-- MAY 30 -->
+        <div class="day-card">
+          <div class="day-header">
+            <div class="day-num-block">
+              <div class="d-badge badge-depart"><span class="d-num">30</span><span class="d-dow">Sat</span></div>
+            </div>
+            <div class="day-summary">
+              <div class="d-loc"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>Langkawi → KUL → NRT</div>
+              <div class="d-title">帰国・LGK→KUL→NRT</div>
+            </div>
+            <span class="day-tag tag-depart"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 22l11-11M2 22l7-20 4 9 9 4-20 7z"/></svg>帰国</span>
+          </div>
+          <div class="day-events">
+            <div class="ev ev-note">
+              <div class="ev-icon-wrap"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg></div>
+              <div class="ev-content">
+                <div class="ev-header"><span class="ev-name">フリータイム・ハーベストフェスティバル</span><span class="ev-time-pill">午前</span></div>
+              </div>
+            </div>
+            <div class="ev ev-drive">
+              <div class="ev-icon-wrap"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 17H3V11l3-5h12l3 5v6h-3"/><circle cx="7.5" cy="17" r="2"/><circle cx="16.5" cy="17" r="2"/><path d="M3 11h18M9 6l-1 5M15 6l1 5"/></svg></div>
+              <div class="ev-content">
+                <div class="ev-header"><span class="ev-name">レンタカー返却</span></div>
+                <span class="ev-sub">ランカウイ国際空港・出発前に返却</span>
+              </div>
+            </div>
+            <div class="ev ev-flight">
+              <div class="ev-icon-wrap"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg></div>
+              <div class="ev-content">
+                <div class="ev-header"><span class="ev-name">LGK → KUL 国内線</span><span class="ev-time-pill">午後出発</span></div>
+                <span class="ev-sub">ランカウイ国際空港・約1h・18:30前の便推奨</span>
+              </div>
+            </div>
+            <div class="ev ev-depart">
+              <div class="ev-icon-wrap"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg></div>
+              <div class="ev-content">
+                <div class="ev-header"><span class="ev-name">KUL出発・JL 0724</span><span class="ev-time-pill">22:50</span></div>
+                <span class="ev-sub">KLIAターミナル1 → NRTターミナル2</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /schedule -->
+
+      <div class="alert-box">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <span><strong>注意</strong> &nbsp;5/26〜28はHari Raya Haji（ハリラヤ・ハジ）の連休のため、マレーシア政府機関の多くが休業予定（tentative）。KKM・PTSS関連機関とのミーティング日程は事前確認必須。</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── Meetings ── -->
+  <div class="section">
+    <div class="section-title">確定ミーティング</div>
+    <div class="card">
+      <div class="meetings-row">
+        <div class="meeting-item">
+          <div class="mi-date">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            May 25 (Mon)
+          </div>
+          <div class="mi-title">保健省（MOH）</div>
+          <div class="mi-row">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            MOH会議室、クアラルンプール
+          </div>
+          <div class="mi-time">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            10:00
+          </div>
+        </div>
+        <div class="meeting-item">
+          <div class="mi-date">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            May 26 (Tue)
+          </div>
+          <div class="mi-title">PTSSアラウ院長</div>
+          <div class="mi-row">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            院長会議室、PTSS Arau, Perlis
+          </div>
+          <div class="mi-time">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            09:00
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-footer">Updated 2026-04-13 · Malaysia Business Trip</div>
+</div>
+</body>
+</html>
